@@ -1,0 +1,177 @@
+{
+  "name": "Wheather_Forcast_AI_Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -40,
+        180
+      ],
+      "id": "8a4053f4-7f38-4408-8788-d995826cb339",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get weather data",
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=25.5276&longitude=69.0126&hourly=temperature_2m,rain",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        120,
+        180
+      ],
+      "id": "84679a7a-b9ac-4c52-9816-d1f22c018302",
+      "name": "Get_Weather"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "sends weaher report email.",
+        "sendTo": "crajnesh60@gmail.com",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', `3 to 4 words subject line that are unique and excite user to check it.`, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', `A unique weather report message.`, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        280,
+        160
+      ],
+      "id": "1fd2c0b7-173e-4454-bf60-21720be47b58",
+      "name": "Send_Email",
+      "webhookId": "83cd8033-2827-4793-b38b-d5524db853b8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JHQsaZbSfYbKl7Iu",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat-v3-0324:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        180
+      ],
+      "id": "05211824-cdbb-405b-a3a7-58f9857a282e",
+      "name": "LLM_Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "uy8Fbe7MEeWEbwAW",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        -100
+      ],
+      "id": "a146cf05-a84c-4a1a-a122-b7e570ec65ff",
+      "name": "Weather Forcast Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -440,
+        -60
+      ],
+      "id": "efe3e0a6-3a5a-48a3-b288-773cf03e4d43",
+      "name": "Command to Agent",
+      "webhookId": "21e20079-5ba1-4b70-b019-765fb6d6c994"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Weather Forcast Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Weather": {
+      "ai_tool": [
+        [
+          {
+            "node": "Weather Forcast Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send_Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "Weather Forcast Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM_Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Weather Forcast Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Command to Agent": {
+      "main": [
+        [
+          {
+            "node": "Weather Forcast Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e6cd28d3-7b64-4be5-9f7b-30928ac6f294",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "08f3798649724916365438da1e233b17b6752eb29ff01f1521428115659e0fcf"
+  },
+  "id": "SY3C7SyerQNCO86h",
+  "tags": []
+}
